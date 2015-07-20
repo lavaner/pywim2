@@ -2,7 +2,10 @@
 """
 """
 
+from __future__ import division, absolute_import
+
 import numpy as np
+from numpy import matlib
 
 class LargeScaleParameter:
     # Delay spread and distribution
@@ -87,17 +90,63 @@ class ChannelModel:
         
 class Model:
     def __init__(self):
-        self.state = 0
+        self.inital_state = 0
         
-    def filter(self, input):
+    def filter(self, input, coef=1, delay=0):
+        """Filter the input signal with specified model
 
-        coef_matrix = np.matrix([[1,1],[1,1]])
-        input = np.matrix(np.ones([2,10]))
-        output = np.matrix(np.zeros([2,10]))
-        for i in range(input.shape[1]):
-            output[::,i] = coef_matrix*input[::,i]
+        Parameters
+        ----------
+        input : 2-dimensional array of int Shape of 
+            tx antenna element x number of samples
         
+        See Also 
+        --------
+
+        Notes
+        -----
+
+        Examples
+        --------
+        """
+
+        num_tx_ele, num_rx_ele, num_path, num_sample = coef.shape
+        
+        output = np.zeros((num_rx_ele, num_sample))
+
+        delay_buffer = np.zeros((num_path, num_sample+np.max(delay)))
+        for s in range(num_rx_ele):
+            cluster_buffer = np.zeros((num_tx_ele, num_sample))
+
+            for u in range(num_tx_ele):
+                input_temp = matlib.repmat(input[u,:], num_path, 1)
+
+                coef_matrix = coef[u,s,:,:]
+                
+                # multiple coef
+                output_temp = input_temp*coef_matrix
+      
+                # delay
+                for p in range(num_path):
+                    delay_buffer[p, 
+                                 delay[p]:delay[p]+num_sample] = output_temp[p, :]        
+
+                cluster_buffer[u, :] = delay_buffer[:,:num_sample].sum(0) 
+
+            # multipath combine
+            output[s, :] = cluster_buffer.sum(0)
+
         return output
+    
+    def reset(self):
+        """
+        
+        """
+        pass
 
+    def _generate_coefficient(self):
+        pass
 
+    def _generate_path_delays(self):
+        pass
 
