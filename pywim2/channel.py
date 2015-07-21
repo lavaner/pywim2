@@ -89,8 +89,9 @@ class ChannelModel:
 
         
 class Model:
-    def __init__(self):
+    def __init__(self, scenario=None):
         self.inital_state = 0
+        self.scenario = scenario
         
     def filter(self, input, coef=1, delay=0):
         """Filter the input signal with specified model
@@ -144,9 +145,9 @@ class Model:
         """
         pass
 
-    def _generate_coefficient(self):
+    def _gen_coef(self):
         pass
 
-    def _generate_path_delays(self):
+    def _gen_path_delays(self):
         pass
 

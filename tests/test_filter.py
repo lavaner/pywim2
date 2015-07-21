@@ -6,10 +6,13 @@ from numpy.testing import *
 
 import pywim2
 from pywim2 import channel
-
-
+try:
+    from unittets.mock import Mock,MagicMock
+else:
+    from mock import Mock,MagicMock
 
 class TestChannelFilter(unittest.TestCase):
+    @patch.object(channel.Model, '_gen_coef')
     def test_multipath(self):
         model = channel.Model()
         input = np.ones((1,10))
