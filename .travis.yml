@@ -4,3 +4,6 @@ language: python
 python:
   - 2.7
   - 3.4
+
+before_script:
+  - sudo apt-get install python-numpy python3-numpy
