@@ -2,9 +2,15 @@
 #   http://lint.travis-ci.org/
 language: python
 python:
-  - 2.7
-  - 3.4
+  - "2.7"
+  - "3.4"
 
-before_script:
-  - sudo apt-get install python-numpy python3-numpy
-  
+#command to install dependencies
+install:
+  - "pip install ."
+  - "pip install -r requirements.txt"
+
+# command to run-tests
+script: nosetests
+
+
